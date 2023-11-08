@@ -1,0 +1,26 @@
+.toast {
+  width: 290px;
+  height: 282px;
+  background-color: #192a32;
+  position: absolute;
+  bottom: 26px;
+  left: 38px;
+  border-radius: 18px;
+}
+.toast h1 {
+  color: #31c4be;
+  font-size: 26px;
+  font-weight: 800;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  text-align: center;
+}
+.toast p {
+  color: #f2b237;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 31px;
+  letter-spacing: 0em;
+  text-align: center;
+  margin: 0;
+}
