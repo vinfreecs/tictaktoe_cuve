@@ -1,0 +1,52 @@
+.threexthree{
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 49px;
+    gap: 30px;
+}
+.option-btn{
+    width: 5.375rem;
+    height: 5.375rem;
+    border-radius: 0.625rem;
+    background-color: #1F3540;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+}
+.top-game-place{
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 19px;
+}
+.logo-game-place{
+    margin-left: 49px;
+    display: flex;
+    gap: 5px;
+}
+.turn-display{
+    position: absolute;
+    display: flex;
+    width: 5.375rem;
+height: 2.4375rem;
+border-radius: 0.625rem;
+background: #1F3540;
+box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+left: 10.31rem;
+gap: 10px;
+justify-content: center;
+align-items: center;
+}
+.turn-display img{
+    width: 0.6875rem;
+height: 0.6875rem;
+}
+.turn-display p{
+    color: #A8BEC9;
+font-family: 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
+font-size: 0.75rem;
+font-style: normal;
+font-weight: 800;
+line-height: normal;
+}
