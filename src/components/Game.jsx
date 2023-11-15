@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Game.css";
 import Game_Home from "./Game_Home";
 import Game_Place from "./Game_Place";
@@ -21,12 +21,35 @@ export default function Game() {
     null,
   ]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      if (currPlayer != "" && currPlayer != playerSelection) {
+        const randomNumber = [];
+        for (let i = 0; i < optionBtns.length; i++) {
+          if (optionBtns[i] === null) randomNumber.push(i);
+        }
+        setOptionBtns((prevOptionBtns) => {
+          const newArr = [...prevOptionBtns]; // Create a copy of the previous state
+          newArr[
+            randomNumber[Math.floor(Math.random() * randomNumber.length)]
+          ] = currPlayer;
+          currPlayer === "x-btn"
+            ? setCurrPlayer("o-btn")
+            : setCurrPlayer("x-btn");
+          return newArr; // Return the updated state
+        });
+      }
+    }, 2000);
+  }, [currPlayer]);
+
   const handleOptionBtn = (e) => {
-    if (optionBtns[parseInt(e.target.id)] === null) {
+    if (
+      currPlayer === playerSelection &&
+      optionBtns[parseInt(e.target.id)] === null
+    ) {
       setOptionBtns((prevOptionBtns) => {
         const newArr = [...prevOptionBtns]; // Create a copy of the previous state
         newArr[parseInt(e.target.id)] = currPlayer;
-        console.log(optionBtns);
         currPlayer === "x-btn"
           ? setCurrPlayer("o-btn")
           : setCurrPlayer("x-btn");
@@ -35,22 +58,29 @@ export default function Game() {
     }
   };
 
-  if(currPlayer!="" && currPlayer != playerSelection){
-    console.log(Math.floor(Math.random()*10))
-    setTimeout(()=>{
-        setOptionBtns((prevOptionBtns) => {
-            const newArr = [...prevOptionBtns]; // Create a copy of the previous state
-            newArr[Math.floor(Math.random()*10)] = currPlayer;
-            console.log(optionBtns);
-            currPlayer === "x-btn"
-              ? setCurrPlayer("o-btn")
-              : setCurrPlayer("x-btn");
-            return newArr; // Return the updated state
-          });
-    },2000)
-    
-  }
-
+  const checkWin = () => {
+    const winPatterns = [
+      [0, 1, 2],
+      [0, 3, 6],
+      [3, 4, 5],
+      [0, 4, 8],
+      [1, 4, 7],
+      [2, 5, 8],
+      [2, 4, 6],
+      [6, 7, 8],
+    ];
+    const currPlayerPos = []
+    for(let i=0;i<optionBtns.length;i++){
+      if(optionBtns[i]===currPlayer) currPlayerPos.push(i)
+    }
+    winPatterns.forEach((a) => {
+      if (a.every((ele) => currPlayerPos.includes(ele))) {
+        let winner = currPlayer;
+        console.log(winner+"won the game")
+      }
+    });
+  };
+  checkWin();
   function handleSelectionClick(e) {
     console.log(e.target.id);
     setPlayerSelection(e.target.id);

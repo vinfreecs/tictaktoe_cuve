@@ -13,7 +13,7 @@ export default function Game_Place({playerSelection,handleOptionBtn,currPlayer,o
           <img src={oLogo} alt="O" />
         </div>
         <div className="turn-display">
-            <img src={playerSelection==="x-btn" ? xLogo : oLogo} alt="" />
+            <img src={currPlayer==="x-btn" ? xLogo : oLogo} alt="" />
             <p>TURN</p>
         </div>
       </div>
