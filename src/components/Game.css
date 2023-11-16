@@ -1,4 +1,5 @@
 .game-home{
+    position: relative;
     width: 26rem;
     height: 46.75rem;
     background-color: #192A32;

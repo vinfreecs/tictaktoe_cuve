@@ -50,3 +50,37 @@ font-style: normal;
 font-weight: 800;
 line-height: normal;
 }
+.game-scores-container{
+    position: relative;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-top: 1.2rem;
+    align-items: center;
+    font-family: 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;   
+    color: #1E1E1E;
+    gap: 30px;
+    font-size: 0.625rem;
+font-style: normal;
+font-weight: 600;
+}
+.game-scores-container div{
+    width: 5.375rem;
+height: 3.0625rem;
+border-radius: 0.625rem;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 0.1rem;
+
+}
+.player-score{
+    background-color: #31C4BE;
+}
+.tie-score{
+    background-color: #A8BEC9;
+}
+.comp-score{
+    background-color: #F2B237;
+}
