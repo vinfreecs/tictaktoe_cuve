@@ -84,3 +84,22 @@ gap: 0.1rem;
 .comp-score{
     background-color: #F2B237;
 }
+
+.reset-btn{
+    width: 32px;
+    height: 31px;
+    background-color: #A7BDC8;
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 45px;
+}
+.reset-btn button{
+    border: none;
+    background-color: inherit;
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

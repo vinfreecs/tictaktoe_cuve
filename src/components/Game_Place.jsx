@@ -1,6 +1,7 @@
 import "./Game_Place.css";
 import xLogo from "../assets/x.svg";
 import oLogo from "../assets/o.svg";
+import reset from "../assets/reset.svg";
 import { useState } from "react";
 
 export default function Game_Place({
@@ -9,6 +10,8 @@ export default function Game_Place({
   currPlayer,
   optionBtns,
   status,
+  winner,
+  handleResetBtn
 }) {
   return (
     <>
@@ -20,6 +23,11 @@ export default function Game_Place({
         <div className="turn-display">
           <img src={currPlayer === "x-btn" ? xLogo : oLogo} alt="" />
           <p>TURN</p>
+        </div>
+        <div className="reset-btn">
+          <button onClick={handleResetBtn}>
+            <img src={reset} alt="" />
+          </button>
         </div>
       </div>
       <div className="threexthree">
@@ -54,6 +62,7 @@ export default function Game_Place({
           <p>{status.comp}</p>
         </div>
       </div>
+      
     </>
   );
 }
