@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import "./Game.css";
 import Game_Home from "./Game_Home";
 import Game_Place from "./Game_Place";
@@ -9,12 +9,15 @@ export default function Game() {
   const [openGame, setOpenGame] = useState(false);
   const [winner, setWinner] = useState("");
   const [playerSelection, setPlayerSelection] = useState("");
+  const [compSelection, setCompSelection] = useState("");
   const [currPlayer, setCurrPlayer] = useState("");
   const [status, setStatus] = useState({
     user: 0,
     ties: 0,
     comp: 0,
   });
+  const checking=JSON.parse(localStorage.getItem('items')) 
+  console.log(checking);
   const [optionBtns, setOptionBtns] = useState([
     null,
     null,
@@ -26,7 +29,7 @@ export default function Game() {
     null,
     null,
   ]);
-
+  const [showResult,setShowResult] = useState(false);
   const newGame = () => {
     setWinner("");
     setOptionBtns([null, null, null, null, null, null, null, null, null]);
@@ -38,12 +41,15 @@ export default function Game() {
       comp: 0,
     });
     setCurrPlayer("");
+    setCompSelection("");
+    setShowResult(false)
   };
 
   const replayGame = () => {
     setWinner("");
     setOptionBtns([null, null, null, null, null, null, null, null, null]);
     setCurrPlayer(playerSelection);
+    setShowResult(false)
   };
 
   const checkWin = () => {
@@ -58,30 +64,99 @@ export default function Game() {
       [6, 7, 8],
     ];
     const currPlayerPos = [];
+    const playerPos = [];
+    const compPos = [];
     let occupiedPlaces = 0;
     optionBtns.forEach((ele) => {
       if (ele != null) occupiedPlaces++;
     });
+    if (occupiedPlaces < 5) {
+      console.log("trigeereded");
+      currPlayer === "x-btn" ? setCurrPlayer("o-btn") : setCurrPlayer("x-btn");
+    }
     if (occupiedPlaces >= 5) {
       for (let i = 0; i < optionBtns.length; i++) {
-        if (optionBtns[i] === currPlayer) currPlayerPos.push(i);
+        if (optionBtns[i] === playerSelection) playerPos.push(i);
+        else if (optionBtns[i] === compSelection) compPos.push(i);
       }
-      console.log(currPlayerPos);
       winPatterns.forEach((a) => {
-        if (a.every((ele) => currPlayerPos.includes(ele))) {
-          setWinner((prevState) => {
-            let newWinner = currPlayer;
-            return newWinner;
+        if (a.every((ele) => playerPos.includes(ele))) {
+          setStatus((prevState) => {
+            let newObj = { ...prevState };
+            newObj.user = prevState.user++;
+            return newObj;
           });
-          return true;
+
+          setWinner(playerSelection);
+          setShowResult(true)
+        } else if (
+          winner === "" &&
+          occupiedPlaces >= 6 &&
+          a.every((ele) => compPos.includes(ele))
+        ) {
+          setStatus((prevState) => {
+            let newObj = { ...prevState };
+            newObj.comp = prevState.comp++;
+            return newObj;
+          });
+          setWinner(compSelection);
+          setShowResult(true)
         }
       });
+      currPlayer === "x-btn" ? setCurrPlayer("o-btn") : setCurrPlayer("x-btn");
     }
-    if (occupiedPlaces === 8) setWinner(winner);
-    if (winner === "") {
-      compTurn();
+    if (occupiedPlaces === 9 && winner === "") {
+      if (checkTie(winPatterns)) {
+        
+        setStatus((prevState) => {
+          let newObj = { ...prevState };
+          newObj.ties = prevState.ties++;
+          return newObj;
+        });
+        setWinner("ties");
+        setShowResult(true)
+        console.log("tie trigger---befor this is winner", winner);
+      }
     }
     return;
+  };
+  const checkTie = (winPatterns) => {
+    console.log(winner)
+    const playerPos = [];
+    const compPos = [];
+    let occupiedPlaces = 0;
+    optionBtns.forEach((ele) => {
+      if (ele != null) occupiedPlaces++;
+    });
+    for (let i = 0; i < optionBtns.length; i++) {
+      if (optionBtns[i] === playerSelection) playerPos.push(i);
+      else if (optionBtns[i] === compSelection) compPos.push(i);
+    }
+    winPatterns.forEach((a) => {
+      if (a.every((ele) => playerPos.includes(ele))) {
+        setStatus((prevState) => {
+          let newObj = { ...prevState };
+          newObj.user = prevState.user++;
+          return newObj;
+        });
+
+        setWinner(playerSelection);
+        return false;
+      } else if (
+        winner === "" &&
+        occupiedPlaces >= 6 &&
+        a.every((ele) => compPos.includes(ele))
+      ) {
+        setStatus((prevState) => {
+          let newObj = { ...prevState };
+          newObj.comp = prevState.comp++;
+          return newObj;
+        });
+        setWinner(compSelection);
+        return false;
+      }
+    });
+    return true;
   };
 
   const pickIndex = (compPlayer) => {
@@ -126,8 +201,9 @@ export default function Game() {
     });
     return inde;
   };
-  const compTurn = () => {
-    if (currPlayer != "" && currPlayer != playerSelection && winner === "") {
+
+  useEffect(() => {
+    if (currPlayer != "" && currPlayer === compSelection && winner === "") {
       console.log("playing");
       const randomNumberFirst = [4, 0, 2, 6, 8, 1, 3, 5, 7];
       for (let i = 0; i < optionBtns.length; i++) {
@@ -140,60 +216,61 @@ export default function Game() {
       }
       setOptionBtns((prevOptionBtns) => {
         const newArr = [...prevOptionBtns]; // Create a copy of the previous state
-        newArr[randomNumberFirst[pickIndex(randomNumberFirst)]] = currPlayer;
-        currPlayer === "x-btn"
-          ? setCurrPlayer("o-btn")
-          : setCurrPlayer("x-btn");
+        newArr[randomNumberFirst[pickIndex(randomNumberFirst)]] = compSelection;
+
         return newArr; // Return the updated state
       });
+      checkWin();
     }
-  };
+  }, [currPlayer]);
+  const compTurn = () => {};
+  // useEffect(() => {
+  //   checkWin();
+  // }, [optionBtns]);
 
-  useEffect(() => {
-    checkWin();
-  }, [optionBtns]);
-
-  useEffect(() => {
-    console.log(winner);
-    if (winner != "" && winner == playerSelection) {
-      setStatus((prevState) => {
-        let newObj = { ...prevState };
-        newObj.user = status.user++;
-        return newObj;
-      });
-    } else if (
-      winner != "" &&
-      winner === (playerSelection === "x-btn" ? "o-btn" : "x-btn")
-    ) {
-      console.log("entering", status, winner);
-      setStatus((prevState) => {
-        let newObj = { ...prevState };
-        newObj.comp = status.comp++;
-        return newObj;
-      });
-    } else if (winner === "" && optionBtns.every((ele) => ele != null)) {
-      console.log("entering");
-      setWinner("ties")
-      setStatus((prevState) => {
-        let newObj = { ...prevState };
-        newObj.ties = status.ties++;
-        return newObj;
-      });
-    }
-  }, [winner,optionBtns]);
+  // useEffect(() => {
+  //   if (winner != "" && winner == playerSelection) {
+  //     console.log(" 1 entering", status, winner);
+  //     setStatus((prevState) => {
+  //       let newObj = { ...prevState };
+  //       newObj.user = status.user++;
+  //       console.log("newObj", newObj);
+  //       return newObj;
+  //     });
+  //     console.log(" 2 entering", status, winner);
+  //   } else if (
+  //     winner != "" &&
+  //     winner === (playerSelection === "x-btn" ? "o-btn" : "x-btn")
+  //   ) {
+  //     console.log(" 1 entering", status, winner);
+  //     setStatus((prevState) => {
+  //       let newObj = { ...prevState };
+  //       newObj.comp = status.comp++;
+  //       console.log("newObj", newObj);
+  //       return newObj;
+  //     });
+  //     console.log(" 2 entering", status, winner);
+  //   } else if (winner === "" && optionBtns.every((ele) => ele != null)) {
+  //     console.log(" 1 entering", status, winner);
+  //     setWinner("ties");
+  //     setStatus((prevState) => {
+  //       let newObj = { ...prevState };
+  //       newObj.ties = status.ties++;
+  //       console.log("newObj", newObj);
+  //       return newObj;
+  //     });
+  //     console.log(" 2 entering", status, winner);
+  //   }
+  // }, [winner]);
 
   const handleOptionBtn = (e) => {
-    if (
-      currPlayer === playerSelection &&
-      optionBtns[parseInt(e.target.id)] === null &&
-      winner === ""
-    ) {
+    if (optionBtns[parseInt(e.target.id)] === null && winner === "") {
       setOptionBtns((prevOptionBtns) => {
         const newArr = [...prevOptionBtns]; // Create a copy of the previous state
-        newArr[parseInt(e.target.id)] = currPlayer;
+        newArr[parseInt(e.target.id)] = playerSelection;
         return newArr; // Return the updated state
       });
-      currPlayer === "x-btn" ? setCurrPlayer("o-btn") : setCurrPlayer("x-btn");
+      checkWin();
     }
   };
 
@@ -201,6 +278,9 @@ export default function Game() {
     console.log(e.target.id);
     setPlayerSelection(e.target.id);
     setCurrPlayer(e.target.id);
+    e.target.id === "x-btn"
+      ? setCompSelection("o-btn")
+      : setCompSelection("x-btn");
   }
 
   function handleClickToGame() {
@@ -220,7 +300,7 @@ export default function Game() {
             winner={winner}
             handleResetBtn={newGame}
           />
-          {winner != "" && (
+          {showResult && (
             <>
               <div className="back-result-wrapper">
                 <div className="show-result">
